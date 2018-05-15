@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+import java.util.*;
 
 import net.sf.freecol.client.ClientOptions;
 import net.sf.freecol.client.FreeColClient;
@@ -74,7 +75,7 @@ import org.apache.commons.cli.PosixParser;
  */
 public final class FreeCol {
 
-    private static final Logger logger = Logger.getLogger(FreeCol.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FreeCol.class.getName());
 
     /** The FreeCol release version number. */
     private static final String FREECOL_VERSION = "0.11.6";
@@ -108,8 +109,10 @@ public final class FreeCol {
     private static Locale       locale = null;
 
 
-    // Cli defaults.
-    private static final Advantages ADVANTAGES_DEFAULT = Advantages.SELECTABLE;
+    /*
+     *  Cli defaults.
+     */
+    private static final Advantages ADVANTAGES_DEFAULT = Advantages.SELECTABLE; // NOPMD by shelt on 5/14/18 4:33 PM
     private static final String DIFFICULTY_DEFAULT = "model.difficulty.medium";
     private static final int    EUROPEANS_DEFAULT = 4;
     private static final int    EUROPEANS_MIN = 1;
@@ -170,7 +173,7 @@ public final class FreeCol {
     private static InputStream splashStream;
 
     /** The TotalConversion / ruleset in play, defaults to "freecol". */
-    private static String tc = null;
+    private static String TotalConversion = null;
 
     /** The time out (seconds) for otherwise blocking commands. */
     private static int timeout = -1;
@@ -229,7 +232,10 @@ public final class FreeCol {
         // command line.
         String dataDirectoryArg = findArg("--freecol-data", args);
         String err = FreeColDirectories.setDataDirectory(dataDirectoryArg);
-        if (err != null) fatal(err); // This must not fail.
+        if (err != null)
+        	{
+        		fatal(err); // This must not fail.
+        	}
 
         // Now we have the data directory, establish the base locale.
         // Beware, the locale may change!
@@ -275,10 +281,10 @@ public final class FreeCol {
             baseLogger.addHandler(new DefaultHandler(consoleLogging, logFile));
             Logger freecolLogger = Logger.getLogger("net.sf.freecol");
             freecolLogger.setLevel(logLevel);
-        } catch (FreeColException e) {
+        } catch (FreeColException fcException) {
             System.err.println("Logging initialization failure: "
-                + e.getMessage());
-            e.printStackTrace();
+                + fcException.getMessage());
+            fcException.printStackTrace();
         }
         Thread.setDefaultUncaughtExceptionHandler((Thread thread, Throwable e) -> {
                 baseLogger.log(Level.WARNING, "Uncaught exception from thread: " + thread, e);
@@ -299,7 +305,7 @@ public final class FreeCol {
                 && (clientLocale = Messages.getLocale(clientLanguage)) != locale) {
                 locale = clientLocale;
                 Messages.loadMessageBundle(locale);
-                logger.info("Loaded messages for " + locale);
+                LOGGER.info("Loaded messages for " + locale);
             }
         }
 
@@ -309,8 +315,8 @@ public final class FreeCol {
         Messages.loadModMessageBundle(locale);
 
         // Report on where we are.
-        if (userMsg != null) logger.info(Messages.message(userMsg));
-        logger.info(getConfiguration().toString());
+        if (userMsg != null) LOGGER.info(Messages.message(userMsg));
+        LOGGER.info(getConfiguration().toString());
 
         // Ready to specialize into client or server.
         if (standAloneServer) {
@@ -881,7 +887,7 @@ public final class FreeCol {
         try {
             if (tcf != null) spec = tcf.getSpecification();
         } catch (IOException ioe) {
-            System.err.println("Spec read failed in " + tcf.getId()
+            System.err.println("Spec read failed in " + tcf.getId() // NOPMD by shelt on 5/14/18 4:12 PM
                 + ": " + ioe.getMessage() + "\n");
         }
         if (spec != null) spec.prepare(advantages, difficulty);
@@ -1056,8 +1062,9 @@ public final class FreeCol {
      */
     public static String getValidGUIScales() {
         String result = "";
-        for(int i=GUI_SCALE_MIN_PCT; i<GUI_SCALE_MAX_PCT; i+=GUI_SCALE_STEP_PCT)
-            result += i + ",";
+        for(int i=GUI_SCALE_MIN_PCT; i<GUI_SCALE_MAX_PCT; i+=GUI_SCALE_STEP_PCT) {
+        	result += i + ",";
+        }
         result += GUI_SCALE_MAX_PCT;
         return result;
     }
@@ -1107,7 +1114,7 @@ public final class FreeCol {
      */
     public static void setName(String name) {
         FreeCol.name = name;
-        logger.info("Set FreeCol.name = " + name);
+        LOGGER.info("Set FreeCol.name = " + name);
     }
 
     /**
@@ -1168,7 +1175,7 @@ public final class FreeCol {
      * @return Usually TC_DEFAULT, but can be overridden at the command line.
      */
     public static String getTC() {
-        return (tc == null) ? TC_DEFAULT : tc;
+        return (TotalConversion == null) ? TC_DEFAULT : TotalConversion;
     }
 
     /**
@@ -1179,7 +1186,7 @@ public final class FreeCol {
      * @param tc The name of the new total conversion.
      */
     public static void setTC(String tc) {
-        FreeCol.tc = tc;
+        FreeCol.TotalConversion = tc;
     }
 
     /**
@@ -1354,7 +1361,7 @@ public final class FreeCol {
      * Start the server.
      */
     private static void startServer() {
-        logger.info("Starting stand-alone server.");
+        LOGGER.info("Starting stand-alone server.");
         final FreeColServer freeColServer;
         File saveGame = FreeColDirectories.getSavegameFile();
         if (saveGame != null) {
