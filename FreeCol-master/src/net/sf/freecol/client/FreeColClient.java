@@ -68,20 +68,27 @@ import net.sf.freecol.server.FreeColServer.GameState;
  */
 public final class FreeColClient {
 
-    private static final Logger logger = Logger.getLogger(FreeColClient.class.getName());
-
+    private static final Logger lOGGER = Logger.getLogger(FreeColClient.class.getName());
+    
+    //Allows for control use within game
     private final ConnectController connectController;
-
+    
+    //Allows for control use before the game
     private final PreGameController preGameController;
-
+    
+    //Allows for the pregame to register input
     private final PreGameInputHandler preGameInputHandler;
-
+    
+    //Allows for controls within the game
     private final InGameController inGameController;
-
+    
+    //Allows for input in game
     private final InGameInputHandler inGameInputHandler;
-
+    
+    //Allows for the map to be edited
     private final MapEditorController mapEditorController;
-
+    
+    //Sets the sound for the game
     private SoundController soundController;
 
     /** The server that has been started from the client-GUI. */
@@ -333,11 +340,11 @@ public final class FreeColClient {
      */
     private ClientOptions loadClientOptions(File savedGameFile) {
         ClientOptions clop = new ClientOptions();
-        logger.info("Load default client options.");
+        lOGGER.info("Load default client options.");
         clop.load(FreeColDirectories.getBaseClientOptionsFile());
 
         if (actionManager != null) {
-            logger.info("Load client options from the action manager.");
+            lOGGER.info("Load client options from the action manager.");
             clop.add(actionManager);
         }
 
@@ -345,18 +352,18 @@ public final class FreeColClient {
             try {
                 FreeColSavegameFile fcsf
                     = new FreeColSavegameFile(savedGameFile);
-                logger.info("Merge client options from saved game: "
+                lOGGER.info("Merge client options from saved game: "
                     + savedGameFile.getPath());
                 clop.merge(fcsf);
             } catch (IOException ioe) {
-                logger.log(Level.WARNING, "Could not open saved game "
+                lOGGER.log(Level.WARNING, "Could not open saved game "
                     + savedGameFile.getPath(), ioe);
             }
         }
 
         final File userOptions = FreeColDirectories.getClientOptionsFile();
         if (userOptions != null && userOptions.exists()) {
-            logger.info("Merge client options from user options file: "
+            lOGGER.info("Merge client options from user options file: "
                 + userOptions.getPath());
             clop.merge(userOptions);
         }
@@ -371,7 +378,7 @@ public final class FreeColClient {
      * @param err The error message.
      */
     public static void fatal(String err) {
-        logger.log(Level.SEVERE, err);
+        lOGGER.log(Level.SEVERE, err);
         FreeCol.fatal(err);
     }
 
@@ -565,10 +572,10 @@ public final class FreeColClient {
     /**
      * Set the game start state.
      *
-     * @param inGame Whether or not the game has started.
+     * @param gameStart Whether or not the game has started.
      */
-    public void setInGame(boolean inGame) {
-        this.inGame = inGame;
+    public void setInGame(boolean gameStart) {
+        this.inGame = gameStart;
     }
 
     /**
@@ -819,7 +826,7 @@ public final class FreeColClient {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Failed to delete autosave", e);
+            lOGGER.log(Level.WARNING, "Failed to delete autosave", e);
         }
         try {
             gui.quit();

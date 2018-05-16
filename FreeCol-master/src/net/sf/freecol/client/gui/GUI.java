@@ -82,7 +82,7 @@ import net.sf.freecol.common.resources.ResourceManager;
  */
 public class GUI {
 
-    protected static final Logger lOGGER = Logger.getLogger(GUI.class.getName());
+    protected static final Logger LOGGER = Logger.getLogger(GUI.class.getName());
 
     /** Warning levels. */
     protected static final String LEVELS[] = {
@@ -185,7 +185,7 @@ public class GUI {
      * @param desiredWindowSize The desired size of the GUI window.
      */
     public void startGUI(final Dimension desiredWindowSize) {
-        lOGGER.info("It seems that the GraphicsEnvironment is headless!");
+        LOGGER.info("It seems that the GraphicsEnvironment is headless!");
     }
 
     /**
@@ -562,7 +562,7 @@ public class GUI {
         } else {
             Unit defender = target.getDefendingUnit(attacker);
             if (defender == null) {
-                lOGGER.warning("Attacking, but no defender - will try!");
+                LOGGER.warning("Attacking, but no defender - will try!");
                 return true;
             }
             if (defender.hasAbility(Ability.PIRACY)) {
@@ -575,7 +575,7 @@ public class GUI {
         String messageId;
         switch (attacker.getOwner().getStance(enemy)) {
         case WAR:
-            lOGGER.finest("Player at war, no confirmation needed");
+            LOGGER.finest("Player at war, no confirmation needed");
             return true;
         case CEASE_FIRE:
             messageId = "confirmHostile.ceaseFire";
@@ -1509,7 +1509,7 @@ public class GUI {
             try {
                 SwingUtilities.invokeAndWait(runnable);
             } catch (InterruptedException | InvocationTargetException ex) {
-                lOGGER.log(Level.WARNING, "Client GUI interaction", ex);
+                LOGGER.log(Level.WARNING, "Client GUI interaction", ex);
             }
         }
     }
