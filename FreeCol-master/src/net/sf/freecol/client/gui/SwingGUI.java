@@ -144,7 +144,7 @@ public class SwingGUI extends GUI {
     public SwingGUI(FreeColClient freeColClient, float scaleFactor) {
         super(freeColClient, scaleFactor);
         graphicsDevice = getGoodGraphicsDevice();
-        logger.info("GUI constructed using scale factor " + scaleFactor);
+        lOGGER.info("GUI constructed using scale factor " + scaleFactor);
     }
 
 
@@ -232,7 +232,7 @@ public class SwingGUI extends GUI {
                 start.y + dm.getHeight()/2 - splash.getHeight() / 2);
             splash.setVisible(true);
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Splash fail", e);
+            lOGGER.log(Level.WARNING, "Splash fail", e);
             splash = null;
         }
     }
@@ -390,17 +390,17 @@ public class SwingGUI extends GUI {
         String pmoffscreenValue = System.getProperty(pmoffscreen);
         if (pmoffscreenValue == null) {
             System.setProperty(pmoffscreen, usePixmaps.getValue().toString());
-            logger.info(pmoffscreen + " using client option: "
+            lOGGER.info(pmoffscreen + " using client option: "
                 + usePixmaps.getValue());
         } else {
             usePixmaps.setValue(Boolean.valueOf(pmoffscreenValue));
-            logger.info(pmoffscreen + " overrides client option: "
+            lOGGER.info(pmoffscreen + " overrides client option: "
                 + pmoffscreenValue);
         }
         usePixmaps.addPropertyChangeListener((PropertyChangeEvent e) -> {
                 String newValue = e.getNewValue().toString();
                 System.setProperty(pmoffscreen, newValue);
-                logger.info("Set " + pmoffscreen + " to: " + newValue);
+                lOGGER.info("Set " + pmoffscreen + " to: " + newValue);
             });
 
         this.mapViewer = new MapViewer(freeColClient);
@@ -413,7 +413,7 @@ public class SwingGUI extends GUI {
             .getOption(ClientOptions.LANGUAGE);
         o.addPropertyChangeListener((PropertyChangeEvent e) -> {
                 Language language = (Language)e.getNewValue();
-                logger.info("Set language to: " + language);
+                lOGGER.info("Set language to: " + language);
                 if (Messages.AUTOMATIC.equalsIgnoreCase(language.getKey())) {
                     showInformationMessage("info.autodetectLanguageSelected");
                 } else {
@@ -426,8 +426,8 @@ public class SwingGUI extends GUI {
                 }
             });
 
-        logger.info("GUI created.");
-        logger.info("Starting in Move Units View Mode");
+        lOGGER.info("GUI created.");
+        lOGGER.info("Starting in Move Units View Mode");
     }
 
     /**
@@ -669,9 +669,9 @@ public class SwingGUI extends GUI {
                 mapControls = (MapControls)controls
                     .getConstructor(FreeColClient.class)
                     .newInstance(freeColClient);
-                logger.info("Instantiated " + panelName);
+                lOGGER.info("Instantiated " + panelName);
             } catch (Exception e) {
-                logger.log(Level.INFO, "Fallback to CornerMapControls from "
+                lOGGER.log(Level.INFO, "Fallback to CornerMapControls from "
                     + className, e);
                 mapControls = new CornerMapControls(freeColClient);
             }

@@ -629,10 +629,10 @@ public final class FreeCol {
             }
 
             if (line.hasOption("default-locale")) {
-                ; // Do nothing, already handled in main().
+                 // Do nothing, already handled in main().
             }
             if (line.hasOption("freecol-data")) {
-                ; // Do nothing, already handled in main().
+                // Do nothing, already handled in main().
             }
 
             if (line.hasOption("advantages")) {
@@ -799,6 +799,7 @@ public final class FreeCol {
                 } catch (FileNotFoundException fnfe) {
                     gripe(StringTemplate.template("cli.error.splash")
                         .addName("%name%", splash));
+                    LOGGER.log(logLevel, "FileNotFoundException reached", fnfe);
                 }
             }
 
@@ -1050,6 +1051,7 @@ public final class FreeCol {
             } catch (NumberFormatException nfe) {
                 valid = false;
                 guiScale = GUI_SCALE_MAX;
+                LOGGER.log(logLevel, "NumberFormatException reached", nfe);
             }
         }
         return valid;
@@ -1082,7 +1084,9 @@ public final class FreeCol {
                 setEuropeanCount(n);
                 return n;
             }
-        } catch (NumberFormatException nfe) {}
+        } catch (NumberFormatException nfe) {
+        	LOGGER.log(logLevel, "NumberFormatException reached", nfe);
+        	}
         return -1;
     }
 
@@ -1164,6 +1168,7 @@ public final class FreeCol {
         try {
             serverPort = Integer.parseInt(arg);
         } catch (NumberFormatException nfe) {
+        	LOGGER.log(logLevel, "NumberFormatException reached", nfe);
             return false;
         }
         return true;
@@ -1197,7 +1202,9 @@ public final class FreeCol {
     public static FreeColTcFile getTCFile() {
         try {
             return new FreeColTcFile(getTC());
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+        	LOGGER.log(logLevel, "IOException reached", ioe);
+        }
         return null;
     }
 
@@ -1229,7 +1236,9 @@ public final class FreeCol {
                 FreeCol.timeout = result;
                 return true;
             }
-        } catch (NumberFormatException nfe) {}
+        } catch (NumberFormatException nfe) {
+        	LOGGER.log(logLevel, "NumberFormatException reached", nfe);
+        }
         return false;
     }
 
@@ -1259,7 +1268,9 @@ public final class FreeCol {
             try {
                 windowSize = new Dimension(Integer.parseInt(xy[0]),
                                            Integer.parseInt(xy[1]));
-            } catch (NumberFormatException nfe) {}
+            } catch (NumberFormatException nfe) {
+            	LOGGER.log(logLevel, "NumberFormatException reached", nfe);
+            }
         }
         if (windowSize == null) windowSize = new Dimension(-1, -1);
     }

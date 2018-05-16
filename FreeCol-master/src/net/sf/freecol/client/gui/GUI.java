@@ -82,10 +82,10 @@ import net.sf.freecol.common.resources.ResourceManager;
  */
 public class GUI {
 
-    protected static final Logger logger = Logger.getLogger(GUI.class.getName());
+    protected static final Logger lOGGER = Logger.getLogger(GUI.class.getName());
 
     /** Warning levels. */
-    protected static final String levels[] = {
+    protected static final String LEVELS[] = {
         "low", "normal", "high"
     };
 
@@ -185,7 +185,7 @@ public class GUI {
      * @param desiredWindowSize The desired size of the GUI window.
      */
     public void startGUI(final Dimension desiredWindowSize) {
-        logger.info("It seems that the GraphicsEnvironment is headless!");
+        lOGGER.info("It seems that the GraphicsEnvironment is headless!");
     }
 
     /**
@@ -532,9 +532,9 @@ public class GUI {
         t = StringTemplate.template("confirmTribute.european")
             .addStringTemplate("%nation%", other.getNationLabel())
             .addStringTemplate("%danger%",
-                StringTemplate.template("danger." + levels[mil]))
+                StringTemplate.template("danger." + LEVELS[mil]))
             .addStringTemplate("%finance%",
-                StringTemplate.template("finance." + levels[fin]));
+                StringTemplate.template("finance." + LEVELS[fin]));
         return showSelectTributeAmountDialog(t, gold);
     }
 
@@ -562,7 +562,7 @@ public class GUI {
         } else {
             Unit defender = target.getDefendingUnit(attacker);
             if (defender == null) {
-                logger.warning("Attacking, but no defender - will try!");
+                lOGGER.warning("Attacking, but no defender - will try!");
                 return true;
             }
             if (defender.hasAbility(Ability.PIRACY)) {
@@ -575,7 +575,7 @@ public class GUI {
         String messageId;
         switch (attacker.getOwner().getStance(enemy)) {
         case WAR:
-            logger.finest("Player at war, no confirmation needed");
+            lOGGER.finest("Player at war, no confirmation needed");
             return true;
         case CEASE_FIRE:
             messageId = "confirmHostile.ceaseFire";
@@ -1509,7 +1509,7 @@ public class GUI {
             try {
                 SwingUtilities.invokeAndWait(runnable);
             } catch (InterruptedException | InvocationTargetException ex) {
-                logger.log(Level.WARNING, "Client GUI interaction", ex);
+                lOGGER.log(Level.WARNING, "Client GUI interaction", ex);
             }
         }
     }
