@@ -36,21 +36,30 @@ import net.sf.freecol.common.model.Tile;
 import net.sf.freecol.common.model.Unit;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Listens to mouse buttons being pressed at the level of the Canvas.
+ *
+ * @see CanvasMouseEvent
  */
 public final class CanvasMouseListener implements ActionListener, MouseListener {
 
+    /** The Constant logger. */
     private static final Logger logger = Logger.getLogger(CanvasMouseListener.class.getName());
 
+    /** The Constant doubleClickDelay. */
     private static final int doubleClickDelay = 200; // Milliseconds
 
+    /** The free col client. */
     private final FreeColClient freeColClient;
 
+    /** The canvas. */
     private final Canvas canvas;
 
+    /** The double click timer. */
     private final Timer doubleClickTimer = new Timer(doubleClickDelay,this);
 
+    /** The center Y. */
     private int centerX, centerY;
 
 

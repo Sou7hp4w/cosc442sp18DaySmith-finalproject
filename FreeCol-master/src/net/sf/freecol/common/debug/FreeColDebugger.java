@@ -26,6 +26,7 @@ import java.io.PrintStream;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ import net.sf.freecol.server.FreeColServer;
  */
 public class FreeColDebugger {
 
-    private static final Logger logger = Logger.getLogger(FreeColDebugger.class.getName());
+    private static final Logger lOGGER = Logger.getLogger(FreeColDebugger.class.getName());
 
     /** The debug modes, any of which may be active. */
     public static enum DebugMode {
@@ -132,8 +133,8 @@ public class FreeColDebugger {
      */
     public static String getDebugModes() {
         return Arrays.stream(DebugMode.values())
-            .filter(m -> isInDebugMode(m))
-            .map(m -> m.toString())
+            .filter(mode -> isInDebugMode(mode))
+            .map(mode -> mode.toString())
             .collect(Collectors.joining(","));
     }
 
@@ -147,8 +148,8 @@ public class FreeColDebugger {
         if (optionValue.isEmpty()) return true;
         // @compat 0.10.x
         try {
-            int i = Integer.parseInt(optionValue);
-            switch (i) {
+            int integer = Integer.parseInt(optionValue);
+            switch (integer) {
             case 3:
                 enableDebugMode(DebugMode.COMMS);
                 // Fall through
@@ -161,7 +162,9 @@ public class FreeColDebugger {
             default:
                 return false;
             }
-        } catch (NumberFormatException nfe) {}
+        } catch (NumberFormatException nfe) {
+        	lOGGER.log(Level.WARNING, "NumberFormatException thrown", nfe);
+        }
         // end @compat
 
         for (String s : optionValue.split(",")) {
@@ -170,7 +173,8 @@ public class FreeColDebugger {
                                               s.toUpperCase(Locale.US));
                 enableDebugMode(mode);
             } catch (Exception e) {
-                logger.warning("Unrecognized debug mode: " + optionValue);
+                lOGGER.warning("Unrecognized debug mode: " + optionValue);
+                lOGGER.log(Level.WARNING, "Exception thrown", e);
                 return false;
             }
         }
@@ -190,6 +194,7 @@ public class FreeColDebugger {
             setDebugRunTurns(Integer.parseInt(turns));
         } catch (NumberFormatException e) {
             setDebugRunTurns(-1);
+            lOGGER.log(Level.WARNING, "NumberFormatException thrown", e);
         }
         if (comma > 0) setDebugRunSave(option.substring(comma + 1));
     }
@@ -268,7 +273,9 @@ public class FreeColDebugger {
                 try {
                     fcs.saveGame(new File(".", getDebugRunSave()),
                                  freeColClient.getClientOptions());
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                	lOGGER.log(Level.WARNING, "IOException thrown", e);
+                }
             }
             freeColClient.quit();
         }
@@ -377,7 +384,7 @@ public class FreeColDebugger {
         ) {
             prs.println(msg);
         } catch (Exception e) {
-            ; // Ignore
+        	lOGGER.log(Level.WARNING, "Exception thrown", e); 
         }
     }
 
@@ -388,20 +395,20 @@ public class FreeColDebugger {
      * @return A stack trace as a string.
      */
     public static String stackTraceToString() {
-        LogBuilder lb = new LogBuilder(512);
-        addStackTrace(lb);
-        return lb.toString();
+        LogBuilder logBuilder = new LogBuilder(512);
+        addStackTrace(logBuilder);
+        return logBuilder.toString();
     }
 
     /**
      * Helper that adds a stack trace to a log builder.
      *
-     * @param lb The <code>LogBuilder</code> to add to.
+     * @param logBuilder The <code>LogBuilder</code> to add to.
      */
-    public static void addStackTrace(LogBuilder lb) {
+    public static void addStackTrace(LogBuilder logBuilder) {
         for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
-            lb.add(s.toString(), "\n");
+            logBuilder.add(s.toString(), "\n");
         }
-        lb.shrink("\n");
+        logBuilder.shrink("\n");
     }
 }
